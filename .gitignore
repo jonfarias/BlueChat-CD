@@ -1,0 +1,6 @@
+terraform/.terraform
+terraform/.terraform.lock.hcl
+terraform/backend.tf
+terraform/var.tf
+terraform/variables.tf
+manifests/bluechat/secret-bluechat.yml
