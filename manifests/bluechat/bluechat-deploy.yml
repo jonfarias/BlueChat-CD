@@ -4,14 +4,13 @@ kind: Service
 metadata:
   name: bluechat
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: bluechat
   ports:
   - name: http
     port: 80
     targetPort: 5000
-    nodePort: 30000
 
 ---
 #Deploy Bluechat
@@ -33,7 +32,7 @@ spec:
           command: ['sh', '-c', 'until nslookup db.default.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.144
+        image: jonfarias/bluechat-web:0.1.147
         resources:
           limits:
             memory: "256Mi"
