@@ -1,20 +1,14 @@
-# ======================== DOKS ===========================
-data "digitalocean_kubernetes_cluster" "primary" {
-  name = var.doks_cluster_name
-  depends_on = [
-    digitalocean_kubernetes_cluster.primary
-  ]
+data "google_container_cluster" "main" {
+  name     = var.gcp_cluster_name
+  location = var.gcp_region
+  depends_on = [google_container_cluster.main]
 }
 
-# ======================== ARGO ===========================
-
-data "kubectl_file_documents" "namespace" {
-    content = file("../manifests/argocd/namespace.yml")
-} 
-
-data "kubectl_file_documents" "argocd" {
-    content = file("../manifests/argocd/install.yml")
+data "google_client_config" "main" {
+    depends_on = [google_container_cluster.main]
 }
+
+# ======================== Kubectl ===========================
 
 data "kubectl_file_documents" "bluechat-app" {
     content = file("../manifests/argocd/bluechat-argocd.yml")
@@ -22,4 +16,12 @@ data "kubectl_file_documents" "bluechat-app" {
 
 data "kubectl_file_documents" "secrets-bluechat"{
     content = file("../manifests/bluechat/secret-bluechat.yml")
+}
+
+data "kubectl_file_documents" "ingress-bluechat"{
+    content = file("../manifests/bluechat/ingress/ingress_bluechat.yml")
+}
+
+data "kubectl_file_documents" "ingress-argocd"{
+    content = file("../manifests/bluechat/ingress/ingress_argocd.yml")
 }
