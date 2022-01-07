@@ -1,9 +1,3 @@
-#Namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: bluechat-prod
----
 #Service DB
 apiVersion: v1
 kind: Service

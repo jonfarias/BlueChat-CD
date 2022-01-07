@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: bluechat-prod
+  project: default
   source:
     repoURL: https://github.com/jonfarias/BlueChat-CD.git
     targetRevision: HEAD

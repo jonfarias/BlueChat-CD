@@ -46,6 +46,10 @@ module "gke_auth" {
 
 resource "kubernetes_namespace" "bluechat-prod" {
   metadata {
+    #labels = {
+    #  argocd.argoproj.io/managed-by = "argocd"
+    #}
+    
     name = "bluechat-prod"
   }
 }
