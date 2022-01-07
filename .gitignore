@@ -4,5 +4,5 @@ terraform/backend.tf
 terraform/var.tf
 terraform/variables.tf
 terraform/bluechat-04012022-26411bc00a7e.json
-manifests/bluechat/secret-bluechat.yml
-manifests/bluechat/ingress/
+manifests/bluechat-prod/secret-bluechat.yml
+manifests/bluechat-prod/ingress/

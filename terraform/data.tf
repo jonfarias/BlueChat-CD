@@ -15,13 +15,13 @@ data "kubectl_file_documents" "bluechat-app" {
 }
 
 data "kubectl_file_documents" "secrets-bluechat"{
-    content = file("../manifests/bluechat/secret-bluechat.yml")
+    content = file("../manifests/bluechat-prod/secret-bluechat.yml")
 }
 
 data "kubectl_file_documents" "ingress-bluechat"{
-    content = file("../manifests/bluechat/ingress/ingress_bluechat.yml")
+    content = file("../manifests/bluechat-prod/ingress/ingress_bluechat.yml")
 }
 
 data "kubectl_file_documents" "ingress-argocd"{
-    content = file("../manifests/bluechat/ingress/ingress_argocd.yml")
+    content = file("../manifests/bluechat-prod/ingress/ingress_argocd.yml")
 }

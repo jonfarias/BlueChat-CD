@@ -6,14 +6,14 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: bluechat-prod
   source:
     repoURL: https://github.com/jonfarias/BlueChat-CD.git
     targetRevision: HEAD
     path: manifests/bluechat/
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: bluechat-prod
   syncPolicy:
     automated:
       selfHeal: true

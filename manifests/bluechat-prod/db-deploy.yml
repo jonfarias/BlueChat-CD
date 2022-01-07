@@ -1,8 +1,15 @@
+#Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bluechat-prod
+---
 #Service DB
 apiVersion: v1
 kind: Service
 metadata:
   name: db
+  namespace: bluechat-prod
 spec:
   type: ClusterIP
   selector:
@@ -20,6 +27,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: db-deploy
+  namespace: bluechat-prod
 spec:
   replicas: 1
   template:
