@@ -10,10 +10,12 @@ spec:
   source:
     repoURL: https://github.com/jonfarias/BlueChat-CD.git
     targetRevision: HEAD
-    path: manifests/bluechat/
+    path: manifests/bluechat-prod/
   destination:
     server: https://kubernetes.default.svc
     namespace: bluechat-prod
   syncPolicy:
     automated:
       selfHeal: true
+
+      

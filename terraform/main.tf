@@ -44,6 +44,12 @@ module "gke_auth" {
 
 # =================================================================
 
+resource "kubernetes_namespace" "bluechat-prod" {
+  metadata {
+    name = "bluechat-prod"
+  }
+}
+
 # ============================== HELM ==============================
 
 resource "helm_release" "ingress-nginx" {
@@ -71,6 +77,7 @@ resource "helm_release" "argocd" {
 #  chart      = "cert-manager"
 #  version    = "1.6.1"
 #}
+
 # ============================== kubectl ==============================
 
 resource "kubectl_manifest" "bluechat-app" {
@@ -79,19 +86,25 @@ resource "kubectl_manifest" "bluechat-app" {
     yaml_body = element(data.kubectl_file_documents.bluechat-app.documents, count.index)
 }
 
+resource "kubectl_manifest" "ingress-argocd" {
+  depends_on = [helm_release.argocd]
+  count     = length(data.kubectl_file_documents.ingress-argocd.documents)
+  yaml_body = element(data.kubectl_file_documents.ingress-argocd.documents, count.index)
+}
+
+resource "time_sleep" "wait_40_seconds_bluechat_prod" {
+  depends_on = [kubectl_manifest.bluechat-app]
+  create_duration = "40s"
+}
+
 resource "kubectl_manifest" "secrets-bluechat" {
+  depends_on = [time_sleep.wait_40_seconds_bluechat_prod]
   count     = length(data.kubectl_file_documents.secrets-bluechat.documents)
   yaml_body = element(data.kubectl_file_documents.secrets-bluechat.documents, count.index)
 }
 
 resource "kubectl_manifest" "ingress-bluechat" {
-  depends_on = [kubectl_manifest.bluechat-app]
+  depends_on = [time_sleep.wait_40_seconds_bluechat_prod]
   count     = length(data.kubectl_file_documents.ingress-bluechat.documents)
   yaml_body = element(data.kubectl_file_documents.ingress-bluechat.documents, count.index)
-}
-
-resource "kubectl_manifest" "ingress-argocd" {
-  depends_on = [helm_release.argocd]
-  count     = length(data.kubectl_file_documents.ingress-argocd.documents)
-  yaml_body = element(data.kubectl_file_documents.ingress-argocd.documents, count.index)
 }
