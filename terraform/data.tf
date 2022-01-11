@@ -25,3 +25,7 @@ data "kubectl_file_documents" "ingress-bluechat"{
 data "kubectl_file_documents" "ingress-argocd"{
     content = file("../manifests/bluechat-prod/ingress/ingress_argocd.yml")
 }
+
+data "kubectl_file_documents" "prometheus"{
+    content = file("../manifests/monitoring/ingress_grafana.yml")
+}

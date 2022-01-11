@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bluechat-ingress
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  #  cert-manager.io/cluster-issuer: "letsencrypt-cluster-issuer"
+spec:
+  #tls:
+  #- hosts: 
+  #  - bluechat.online
+  #  secretName: bluechat-cert-tls
+  rules:
+  - host: grafana.bluechat.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-grafana
+            port:
+              number: 80

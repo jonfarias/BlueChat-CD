@@ -1,4 +1,5 @@
 # ============================== GCP ==============================
+
 resource "google_service_account" "main" {
   account_id   = "${var.gcp_cluster_name}-id"
   display_name = "GKE Cluster ${var.gcp_cluster_name} Service Account"
@@ -27,7 +28,10 @@ resource "google_container_node_pool" "main" {
   }
 }
 
+# ======================================================================
+
 # ============================== GKE AUTH ==============================
+
 resource "time_sleep" "wait_30_seconds" {
   depends_on = [google_container_cluster.main]
   create_duration = "30s"
@@ -42,17 +46,17 @@ module "gke_auth" {
   use_private_endpoint = false
 }
 
-# =================================================================
+# ==================================================================
+
+# ============================== K8S ===============================
 
 resource "kubernetes_namespace" "bluechat-prod" {
   metadata {
-    #labels = {
-    #  argocd.argoproj.io/managed-by = "argocd"
-    #}
-    
     name = "bluechat-prod"
   }
 }
+
+# ==================================================================
 
 # ============================== HELM ==============================
 
@@ -75,12 +79,24 @@ resource "helm_release" "argocd" {
   namespace  = "argocd"
 }
 
+resource "helm_release" "prometheus" {
+  depends_on = [helm_release.ingress-nginx]
+  name  = "prometheus"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "12.8.0"
+  create_namespace = true
+  namespace  = "monitoring"
+}
+
 #resource "helm_release" "cert-manager" {
 #  name  = "cert-manager"
 #  repository = "https://charts.jetstack.io"
 #  chart      = "cert-manager"
 #  version    = "1.6.1"
 #}
+
+# =====================================================================
 
 # ============================== kubectl ==============================
 
@@ -96,19 +112,21 @@ resource "kubectl_manifest" "ingress-argocd" {
   yaml_body = element(data.kubectl_file_documents.ingress-argocd.documents, count.index)
 }
 
-resource "time_sleep" "wait_40_seconds_bluechat_prod" {
-  depends_on = [kubectl_manifest.bluechat-app]
-  create_duration = "40s"
-}
 
 resource "kubectl_manifest" "secrets-bluechat" {
-  depends_on = [time_sleep.wait_40_seconds_bluechat_prod]
+  depends_on = [kubernetes_namespace.bluechat-prod]
   count     = length(data.kubectl_file_documents.secrets-bluechat.documents)
   yaml_body = element(data.kubectl_file_documents.secrets-bluechat.documents, count.index)
 }
 
 resource "kubectl_manifest" "ingress-bluechat" {
-  depends_on = [time_sleep.wait_40_seconds_bluechat_prod]
+  depends_on = [helm_release.ingress-nginx]
   count     = length(data.kubectl_file_documents.ingress-bluechat.documents)
   yaml_body = element(data.kubectl_file_documents.ingress-bluechat.documents, count.index)
+}
+
+resource "kubectl_manifest" "prometheus" {
+  depends_on = [helm_release.prometheus]
+  count     = length(data.kubectl_file_documents.prometheus.documents)
+  yaml_body = element(data.kubectl_file_documents.prometheus.documents, count.index)
 }
