@@ -10,6 +10,10 @@ resource "google_container_cluster" "main" {
   location = var.gcp_region
   remove_default_node_pool = true
   initial_node_count       = var.gcp_initial_node_count
+
+  release_channel {
+    channel = "STABLE"
+  }
 }
 
 resource "google_container_node_pool" "main" {
@@ -21,6 +25,7 @@ resource "google_container_node_pool" "main" {
   node_config {
     preemptible  = true
     machine_type = var.gcp_node_machine
+    image_type   = "COS_CONTAINERD"
     service_account = google_service_account.main.email
     oauth_scopes    = [
       "https://www.googleapis.com/auth/cloud-platform"
