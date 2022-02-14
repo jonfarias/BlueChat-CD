@@ -20,6 +20,9 @@ jobs:
     - name: Auth
       id: auth
       run: echo ${{ secrets.GOOGLE_CREDENTIALS }} > terraform-deploy.json
+    - name: Terraform Validate
+      id: terraform-validade
+      run: terraform validate  
     - name: Terraform Init and Plan   
       id: init-terraform
       run: terraform init 
