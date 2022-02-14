@@ -9,27 +9,27 @@ jobs:
       - terraform/init:
           checkout: true
           context: terraform
-          persist-workspace: true
+
       - terraform/validate:
           checkout: true
           context: terraform
-          persist-workspace: true
+
       - terraform/fmt:
           checkout: true
           context: terraform
-          persist-workspace: true
+
       - terraform/plan:
           checkout: true
           context: terraform
-          persist-workspace: true
+
       - terraform/apply:
           checkout: true
           context: terraform
-          persist-workspace: true
+
       - terraform/destroy:
           checkout: true
           context: terraform
-          persist-workspace: true
+  
     working_directory: ~/BlueChat-CD/terraform
 workflows:
   single-job-lifecycle:
