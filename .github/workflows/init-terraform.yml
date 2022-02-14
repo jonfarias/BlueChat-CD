@@ -25,9 +25,13 @@ jobs:
       run: terraform validate  
     - name: Terraform Init and Plan   
       id: init-terraform
-      run: terraform init 
-      #&& terraform plan
+      run: terraform init
       env:
-        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}  
+    - name: Terraform Validate
+      id: terraform-validade
+      run: terraform validate 
+      #&& terraform plan
+
 
 #&& terraform apply -auto-approve -var="project_id=${{ secrets.PROJECT_ID  }}"
