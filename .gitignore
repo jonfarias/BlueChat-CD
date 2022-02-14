@@ -1,6 +1,5 @@
 terraform/.terraform
 terraform/.terraform.lock.hcl
 terraform/var.tf
-terraform/terraform-deploy.json
 manifests/bluechat-prod/secret-bluechat.yml
 manifests/bluechat-prod/ingress/
