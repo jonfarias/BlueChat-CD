@@ -13,6 +13,11 @@ jobs:
       run: wget -O terraform.zip https://releases.hashicorp.com/terraform/1.1.3/terraform_1.1.3_linux_amd64.zip && unzip terraform.zip && chmod +x terraform && sudo mv terraform /usr/local/bin
     - name: Apply Terraform
       id: apply-terraform
-      run: sed -i "s/<project-id>/${{ secrets.PROJECT_ID }}/g" backend.tf && terraform init && terraform apply -auto-approve -var="project_id=${{ secrets.PROJECT_ID  }}"
+      run: sed -i "s/<project-id>/${{ secrets.PROJECT_ID }}/g" backend.tf 
+    - name: Init Terraform   
+      id: init-terraform
+      run: terraform init 
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
+
+#&& terraform apply -auto-approve -var="project_id=${{ secrets.PROJECT_ID  }}"
