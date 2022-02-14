@@ -3,6 +3,7 @@ terraform/.terraform.lock.hcl
 terraform/backend.tf
 terraform/var.tf
 terraform/variables.tf
+terraform/variables_bkp.tf
 terraform/bluechat-04012022-26411bc00a7e.json
 manifests/bluechat-prod/secret-bluechat.yml
 manifests/bluechat-prod/ingress/

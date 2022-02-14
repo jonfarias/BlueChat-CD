@@ -53,16 +53,6 @@ module "gke_auth" {
 
 # ==================================================================
 
-# ============================== K8S ===============================
-
-resource "kubernetes_namespace" "bluechat-prod" {
-  metadata {
-    name = "bluechat-prod"
-  }
-}
-
-# ==================================================================
-
 # ============================== HELM ==============================
 
 resource "helm_release" "ingress-nginx" {
@@ -105,6 +95,11 @@ resource "helm_release" "prometheus" {
 
 # ============================== kubectl ==============================
 
+resource "kubectl_manifest" "namespace-bluechat-prod" {
+  count     = length(data.kubectl_file_documents.namespace-bluechat-prod.documents)
+  yaml_body = element(data.kubectl_file_documents.namespace-bluechat-prod.documents, count.index)
+}
+
 resource "kubectl_manifest" "bluechat-app" {
     depends_on = [helm_release.argocd]
     count     = length(data.kubectl_file_documents.bluechat-app.documents)
@@ -119,7 +114,7 @@ resource "kubectl_manifest" "ingress-argocd" {
 
 
 resource "kubectl_manifest" "secrets-bluechat" {
-  depends_on = [kubernetes_namespace.bluechat-prod]
+  depends_on = [kubectl_manifest.namespace-bluechat-prod]
   count     = length(data.kubectl_file_documents.secrets-bluechat.documents)
   yaml_body = element(data.kubectl_file_documents.secrets-bluechat.documents, count.index)
 }

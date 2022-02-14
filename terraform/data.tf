@@ -14,6 +14,10 @@ data "kubectl_file_documents" "bluechat-app" {
     content = file("../manifests/argocd/bluechat-argocd.yml")
 }
 
+data "kubectl_file_documents" "namespace-bluechat-prod"{
+    content = file("../manifests/bluechat-prod/name-blue.yml")
+}
+
 data "kubectl_file_documents" "secrets-bluechat"{
     content = file("../manifests/bluechat-prod/secret-bluechat.yml")
 }
