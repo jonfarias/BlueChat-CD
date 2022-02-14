@@ -16,7 +16,7 @@ jobs:
       run: wget -O helm.tgz https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz && tar -vzxf helm.tgz && chmod +x linux-amd64/helm && sudo mv linux-amd64/helm /usr/local/bin          
     - name: Apply Terraform
       id: apply-terraform
-      run: sed -i "s/<project-id>/${{ secrets.PROJECT_ID }}/" backend.tf 
+      run: sed -i "s/project-id/${{ secrets.PROJECT_ID }}/" backend.tf 
     #- name: Auth
     #  id: auth
     #  run: echo ${{ secrets.GOOGLE_CREDENTIALS }} > terraform-deploy.json
