@@ -1,22 +1,35 @@
 version: 2
 
 jobs:
+  init:
+    working_directory: ~/BlueChat-CD/
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout:
+          path: ~/BlueChat-CD
+      - run: |
+          echo "Init Tests"
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - ./terraform
+
   plan-apply:
     working_directory: ~/BlueChat-CD/terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
-      - checkout:
-          path: ~/BlueChat-CD/terraform
       - attach_workspace:
-          at: .
+          at: /tmp/workspace
       - run:
           name: Update
           command: |
-            echo $GOOGLE_CREDENTIALS > terraform-deploy.json
+            echo $GOOGLE_CREDENTIALS > /tmp/workspace/terraform/terraform-deploy.json
       - run:
           name: terraform init & plan
           command: |
+            cd /tmp/workspace/terraform/
             terraform init 
             terraform plan 
       - persist_to_workspace:
