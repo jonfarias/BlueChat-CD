@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.1.2"
+  required_version = "~> 1.1.2"
   required_providers {
     kubectl = {
       source  = "gavinbunney/kubectl"
@@ -10,7 +10,7 @@ terraform {
 
 
 provider "google" {
-  credentials = "${file("terraform-deploy.json")}"
+  credentials = file("terraform-deploy.json")
   project     = var.gcp_project_id
   region      = var.gcp_region
   zone        = var.gcp_zone
@@ -32,8 +32,8 @@ provider "kubectl" {
 
 provider "helm" {
   kubernetes {
-  host                   = module.gke_auth.host
-  cluster_ca_certificate = module.gke_auth.cluster_ca_certificate
-  token                  = module.gke_auth.token
+    host                   = module.gke_auth.host
+    cluster_ca_certificate = module.gke_auth.cluster_ca_certificate
+    token                  = module.gke_auth.token
   }
 }
