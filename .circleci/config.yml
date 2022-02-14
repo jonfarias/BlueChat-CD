@@ -1,19 +1,23 @@
 version: 2.1
 orbs:
-  terraform: circleci/terraform@3.0.1
-jobs:
-  single-job-lifecycle:
-    executor: terraform/default
-    steps:
-      - checkout
-      - terraform/install:
-          terraform_version: 1.1.5
-      - terraform/fmt:
-          path: .
-      - terraform/validate:
-          path: .
-    working_directory: ~/BlueChat-CD/terraform
+  terraform: circleci/terraform@1.2.1
 workflows:
-  single-job-lifecycle:
+  deploy_infra:
     jobs:
-      - single-job-lifecycle
+    - terraform/validate:
+        checkout: true
+        context: terraform
+    - terraform/plan:
+        checkout: true
+        context: terraform
+        persist-workspace: true
+        requires:
+        - terraform/validate
+    - terraform/apply:
+        attach-workspace: true
+        context: terraform
+        filters:
+          branches:
+            only: master
+        requires:
+        - terraform/plan
