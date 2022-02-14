@@ -10,7 +10,7 @@ terraform {
 
 
 provider "google" {
-  credentials = "${file("bluechat-04012022-26411bc00a7e.json")}"
+  credentials = "${file("terraform-deploy.json")}"
   project     = var.gcp_project_id
   region      = var.gcp_region
   zone        = var.gcp_zone
