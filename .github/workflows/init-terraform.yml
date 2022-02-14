@@ -17,12 +17,13 @@ jobs:
     - name: Apply Terraform
       id: apply-terraform
       run: sed -i "s/<project-id>/${{ secrets.PROJECT_ID }}/" backend.tf 
-    - name: Auth
-      id: auth
-      run: echo ${{ secrets.GOOGLE_CREDENTIALS }} > terraform-deploy.json
+    #- name: Auth
+    #  id: auth
+    #  run: echo ${{ secrets.GOOGLE_CREDENTIALS }} > terraform-deploy.json
     - name: Terraform Init and Plan   
       id: init-terraform
-      run: terraform init && terraform plan
+      run: terraform init 
+      #&& terraform plan
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
 
