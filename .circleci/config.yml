@@ -80,7 +80,10 @@ workflows:
   version: 2
   plan_approve_apply:
     jobs:
-      - plan-apply
+      - init
+      - plan-apply:
+          requires:
+            - init
       - hold-apply:
           type: approval
           requires:
