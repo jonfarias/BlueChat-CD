@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
-    bucket      = "terraform-backend-bluechat-04012022"
+    bucket      = "terraform-backend-tcc-bluechat"
     prefix      = "bluechat-terraform"
-    credentials = "terraform-deploy.json"
+    #credentials = "terraform-deploy.json"
   }
 }

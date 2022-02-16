@@ -1,7 +1,7 @@
 # ===================== GCP ========================
 variable "gcp_project_id" {
   type    = string
-  default = "bluechat-04012022"
+  default = "tcc-bluechat"
 }
 
 variable "gcp_region" {
