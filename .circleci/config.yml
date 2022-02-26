@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   init-plan:
     docker:
-      - image: cimg/base:latest
+      - image: cimg/base:stable
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASSWD
@@ -20,7 +20,7 @@ jobs:
 
   apply:
     docker:
-      - image: cimg/base:latest
+      - image: cimg/base:stable
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASSWD
@@ -32,7 +32,7 @@ jobs:
 
   destroy:
     docker:
-      - image: cimg/base:latest
+      - image: cimg/base:stable
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASSWD
