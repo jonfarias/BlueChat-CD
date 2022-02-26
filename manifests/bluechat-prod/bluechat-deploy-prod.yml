@@ -20,7 +20,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-deploy-prod
+  name: bluechat-db-deploy-prod
   namespace: bluechat-prod
 spec:
   replicas: 1
@@ -42,9 +42,27 @@ spec:
         #    name: db-disk
         ports:
         - containerPort: 3306
-        envFrom:
-        - secretRef:
-          name: bluechat-secret-prod
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-root-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-database
+        - name: MYSQL_USER
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-password
       #volumes:
        # - name: db-disk
         #  persistentVolumeClaim:
@@ -75,7 +93,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bluechat-deploy
+  name: bluechat-deploy-prod
   namespace: bluechat-prod
 spec:
   replicas: 1
@@ -88,19 +106,57 @@ spec:
       initContainers:
         - name: check-mysql
           image: busybox:1.31.1
-          command: ['sh', '-c', 'until nslookup db.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
+          command: ['sh', '-c', 'until nslookup bluechat-db-prod.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.427
+        image: jonfarias/bluechat-web:0.1.435
         resources:
           limits:
             memory: "256Mi"
             cpu: "500m"
         ports:
         - containerPort: 5000
-        envFrom:
-        - secretRef:
-          name: bluechat-secret-prod
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-database
+        - name: MYSQL_USER
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-password
+        - name: MYSQL_HOST
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-host
+        - name: MYSQL_PORT
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: mysql-port
+        - name: SECRET_KEY
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: secret-key
+        - name: SESSION_TYPE
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: session-type    
+        - name: FLASK_ENV
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret-prod
+                key: flask-env    
   selector:
     matchLabels:
       app: bluechat-prod
