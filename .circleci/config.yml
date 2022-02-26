@@ -18,6 +18,15 @@ jobs:
             docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform init 
             docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform plan 
 
+  aprove-apply:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Terraform Apply-Approval
+          command: |
+            echo "Approve Terraform Apply"
+
   apply:
     docker:
       - image: cimg/base:stable
@@ -30,9 +39,18 @@ jobs:
           version: 20.10.7
           docker_layer_caching: true  
       - run:
-          name: terraform
+          name: terraform apply
           command: |
             docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform apply -auto-approve
+
+  aprove-destroy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Terraform Apply-Approval
+          command: |
+            echo "Approve Terraform Destroy"
 
   destroy:
     docker:
@@ -58,17 +76,33 @@ workflows:
           filters:
             branches:
               only: main
-      - apply:
+
+      - aprove-apply:
           type: approval
           filters:
             branches:
               only: main
           requires:
             - init-plan
-      - destroy:
+
+      - apply:
+          filters:
+            branches:
+              only: main
+          requires:
+            - aprove-apply
+
+      - aprove-destroy:
           type: approval
           filters:
             branches:
               only: main
           requires:
             - apply
+
+      - destroy:
+          filters:
+            branches:
+              only: main
+          requires:
+            - aprove-destroy
