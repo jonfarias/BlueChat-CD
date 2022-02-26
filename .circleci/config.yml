@@ -2,33 +2,41 @@ version: 2
 
 jobs:
   init-plan:
-    working_directory: ~/BlueChat-CD/terraform
     docker:
-      - image: jonfarias/terraform:1
+      - image: cimg/base:latest
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASSWD
     steps:
       - run:
           name: terraform init & plan
           command: |
-            terraform init 
-            terraform plan 
+            docker run jonfarias/terraform:1 terraform init 
+            docker run jonfarias/terraform:1 terraform plan 
 
   apply:
     docker:
-      - image: jonfarias/terraform:1
+      - image: cimg/base:latest
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASSWD
     steps:
       - run:
           name: terraform
           command: |
-            terraform apply -auto-approve
+            docker run jonfarias/terraform:1 terraform apply -auto-approve
 
   destroy:
     docker:
-      - image: jonfarias/terraform:1
+      - image: cimg/base:latest
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASSWD
     steps:
       - run:
           name: terraform destroy
           command: |
-            terraform destroy -auto-approve 
+            docker run jonfarias/terraform:1 terraform destroy -auto-approve 
 
 workflows:
   version: 2
