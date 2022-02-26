@@ -15,8 +15,8 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            docker run jonfarias/terraform:1 terraform init 
-            docker run jonfarias/terraform:1 terraform plan 
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform init 
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform plan 
 
   apply:
     docker:
@@ -25,10 +25,14 @@ jobs:
           username: $DOCKER_USER
           password: $DOCKER_PASSWD
     steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.7
+          docker_layer_caching: true  
       - run:
           name: terraform
           command: |
-            docker run jonfarias/terraform:1 terraform apply -auto-approve
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform apply -auto-approve
 
   destroy:
     docker:
@@ -37,14 +41,18 @@ jobs:
           username: $DOCKER_USER
           password: $DOCKER_PASSWD
     steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.7
+          docker_layer_caching: true  
       - run:
           name: terraform destroy
           command: |
-            docker run jonfarias/terraform:1 terraform destroy -auto-approve 
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform destroy -auto-approve 
 
 workflows:
   version: 2
-  plan_approve_apply:
+  Terraform:
     jobs:
       - init-plan:
           filters:
