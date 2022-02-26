@@ -9,7 +9,7 @@ spec:
   selector:
     app: bluechat-db-prod
   ports:
-    - name: db-port
+    - name: db-port-prod
       protocol: TCP
       port: 3306
       targetPort: 3306
@@ -109,7 +109,7 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-prod.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.435
+        image: jonfarias/bluechat-web:0.1.454
         resources:
           limits:
             memory: "256Mi"
