@@ -9,7 +9,7 @@ spec:
   selector:
     app: bluechat-db-dev
   ports:
-    - name: db-port
+    - name: db-port-dev
       protocol: TCP
       port: 3306
       targetPort: 3306
@@ -90,7 +90,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: bluechat
+    app: bluechat-dev
   ports:
   - name: http
     port: 80
@@ -102,7 +102,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bluechat-deploy
+  name: bluechat-deploy-dev
   namespace: bluechat-dev
 spec:
   replicas: 1
@@ -115,10 +115,10 @@ spec:
       initContainers:
         - name: check-mysql
           image: busybox:1.31.1
-          command: ['sh', '-c', 'until nslookup db.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
+          command: ['sh', '-c', 'until nslookup bluechat-db-dev.bluechat-dev.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.433
+        image: jonfarias/bluechat-web:0.1.446
         resources:
           limits:
             memory: "256Mi"
