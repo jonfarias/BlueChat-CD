@@ -3,6 +3,8 @@ terraform/.terraform.lock.hcl
 terraform/var.tf
 terraform/terraform.json
 terraform/backend.tf 
-manifests/bluechat-prod/secret-bluechat.yml
+terraform/variables.tf
+manifests/bluechat-prod/bluechat-secret-prod.yml
 manifests/bluechat-prod/ingress/
 docker-compose.yml
+docker_build_push.sh
