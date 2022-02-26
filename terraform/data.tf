@@ -11,11 +11,11 @@ data "google_client_config" "main" {
 # ======================== Kubectl ===========================
 
 data "kubectl_file_documents" "bluechat-app" {
-  content = file("../manifests/argocd/bluechat-argocd.yml")
+  content = file("../manifests/argocd/argocd-bluechat-prod.yml")
 }
 
 data "kubectl_file_documents" "namespace-bluechat-prod" {
-  content = file("../manifests/bluechat-prod/name-blue.yml")
+  content = file("../manifests/bluechat-prod/name-blue-prod.yml")
 }
 
 data "kubectl_file_documents" "secrets-bluechat" {

@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluechat
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/jonfarias/BlueChat-CD.git
+    targetRevision: HEAD
+    path: manifests/bluechat-dev/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: bluechat-dev
+  syncPolicy:
+    automated:
+      selfHeal: true
+
+      
