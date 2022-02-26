@@ -2,8 +2,7 @@ terraform/.terraform
 terraform/.terraform.lock.hcl
 terraform/var.tf
 terraform/terraform.json
-terraform/backend.tf
+terraform/backend.tf 
 manifests/bluechat-prod/secret-bluechat.yml
 manifests/bluechat-prod/ingress/
 docker-compose.yml
-.circleci

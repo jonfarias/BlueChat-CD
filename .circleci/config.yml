@@ -1,0 +1,49 @@
+version: 2
+
+jobs:
+  init-plan:
+    working_directory: ~/BlueChat-CD/terraform
+    docker:
+      - image: jonfarias/terraform:1
+    steps:
+      - run:
+          name: terraform init & plan
+          command: |
+            terraform init 
+            terraform plan 
+
+  apply:
+    docker:
+      - image: jonfarias/terraform:1
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform
+          command: |
+            terraform apply -auto-approve
+
+  destroy:
+    docker:
+      - image: jonfarias/terraform:1
+    steps:
+      - attach_workspace:
+         at: .
+      - run:
+          name: terraform destroy
+          command: |
+            terraform destroy -auto-approve 
+
+workflows:
+  version: 2
+  plan_approve_apply:
+    jobs:
+      - init-plan
+      - apply:
+          type: approval
+          requires:
+            - init-plan
+      - destroy:
+          type: approval
+          requires:
+            - apply
