@@ -15,8 +15,8 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform init 
-            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform plan 
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform init 
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform plan 
 
   aprove-apply:
     docker:
@@ -41,7 +41,7 @@ jobs:
       - run:
           name: terraform apply
           command: |
-            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform apply -auto-approve
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform apply -auto-approve
 
   aprove-destroy:
     docker:
@@ -66,7 +66,7 @@ jobs:
       - run:
           name: terraform destroy
           command: |
-            docker run $DOCKER_USER/$DOCKER_CONTAINER:$TAG terraform destroy -auto-approve 
+            docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform destroy -auto-approve 
 
 workflows:
   version: 2
