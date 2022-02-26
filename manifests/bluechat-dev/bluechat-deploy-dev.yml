@@ -1,14 +1,91 @@
+#Service DB
+apiVersion: v1
+kind: Service
+metadata:
+  name: bluechat-db-dev
+  namespace: bluechat-dev
+spec:
+  type: ClusterIP
+  selector:
+    app: bluechat-db-dev
+  ports:
+    - name: db-port
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+
+#Deploy DB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deploy-dev
+  namespace: bluechat-dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+        name: bluechat-db-dev
+        labels:
+          app: bluechat-db-dev
+    spec:
+      containers:
+      - name: bluechat-db
+        image: jonfarias/bluechat-db:1
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        #volumeMounts:
+        #  - mountPath: "/var/lib/mysql"
+        #    name: db-disk
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret
+                key: mysql-root-password
+        - name: MYSQL_DATABASE
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret
+                key: mysql-database
+        - name: MYSQL_USER
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret
+                key: mysql-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: bluechat-secret
+                key: mysql-password
+      #volumes:
+       # - name: db-disk
+        #  persistentVolumeClaim:
+        #    claimName: db-k8s-pvc
+  selector:
+    matchLabels:
+      app: bluechat-db-dev
+
+---
+
 #Namespace
 apiVersion: v1
 kind: Namespace
 metadata:
   name: bluechat-dev
+
 ---
+
 #Service Bluechat
 apiVersion: v1
 kind: Service
 metadata:
-  name: bluechat
+  name: bluechat-dev
   namespace: bluechat-dev
 spec:
   type: ClusterIP
@@ -20,6 +97,7 @@ spec:
     targetPort: 5000
 
 ---
+
 #Deploy Bluechat
 apiVersion: apps/v1
 kind: Deployment
@@ -30,9 +108,9 @@ spec:
   replicas: 1
   template:
     metadata:
-        name: bluechat
+        name: bluechat-dev
         labels:
-          app: bluechat
+          app: bluechat-dev
     spec:
       initContainers:
         - name: check-mysql
@@ -40,7 +118,7 @@ spec:
           command: ['sh', '-c', 'until nslookup db.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.417
+        image: jonfarias/bluechat-web:0.1.425
         resources:
           limits:
             memory: "256Mi"
@@ -90,4 +168,4 @@ spec:
                 key: flask-env    
   selector:
     matchLabels:
-      app: bluechat
+      app: bluechat-dev
