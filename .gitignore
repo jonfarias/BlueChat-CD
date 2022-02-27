@@ -5,6 +5,7 @@ terraform/terraform.json
 terraform/backend.tf 
 terraform/variables.tf
 manifests/bluechat-prod/bluechat-secret-prod.yml
-manifests/bluechat-prod/ingress/
+manifests/bluechat-dev/bluechat-secret-dev.yml
+manifests/certificates/
 docker-compose.yml
 docker_build_push.sh

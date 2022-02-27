@@ -10,26 +10,49 @@ data "google_client_config" "main" {
 
 # ======================== Kubectl ===========================
 
-data "kubectl_file_documents" "bluechat-app" {
+#ArgoCD-DEV
+data "kubectl_file_documents" "bluechat-app-prod" {
   content = file("../manifests/argocd/argocd-bluechat-prod.yml")
 }
-
+#Namespace BlueChat-PROD
 data "kubectl_file_documents" "namespace-bluechat-prod" {
   content = file("../manifests/bluechat-prod/name-blue-prod.yml")
 }
-
-data "kubectl_file_documents" "secrets-bluechat" {
-  content = file("../manifests/bluechat-prod/secret-bluechat.yml")
+#Secrets BlueChat-PROD
+data "kubectl_file_documents" "secrets-bluechat-prod" {
+  content = file("../manifests/bluechat-prod/bluechat-secret-prod.yml")
 }
+#Ingress PROD
+#data "kubectl_file_documents" "ingress-bluechat-prod" {
+#  content = file("../manifests/bluechat-prod/bluechat-ingress-prod.yml")
+#}
 
-data "kubectl_file_documents" "ingress-bluechat" {
-  content = file("../manifests/bluechat-prod/ingress/ingress_bluechat.yml")
+
+#ArgoCD-DEV
+data "kubectl_file_documents" "bluechat-app-dev" {
+  content = file("../manifests/argocd/argocd-bluechat-dev.yml")
 }
+#Namespace BlueChat-DEV
+data "kubectl_file_documents" "namespace-bluechat-dev" {
+  content = file("../manifests/bluechat-dev/name-blue-dev.yml")
+}
+#Secrets BlueChat-DEV
+data "kubectl_file_documents" "secrets-bluechat-dev" {
+  content = file("../manifests/bluechat-dev/bluechat-secret-dev.yml")
+}
+#Ingress DEV
+#data "kubectl_file_documents" "ingress-bluechat-dev" {
+#  content = file("../manifests/bluechat-dev/bluechat-ingress-dev.yml")
+#}
 
 data "kubectl_file_documents" "ingress-argocd" {
-  content = file("../manifests/bluechat-prod/ingress/ingress_argocd.yml")
+  content = file("../manifests/ingress/argocd-ingress.yml")
 }
 
-data "kubectl_file_documents" "prometheus" {
-  content = file("../manifests/monitoring/ingress_grafana.yml")
+data "kubectl_file_documents" "ingress-grafana" {
+  content = file("../manifests/ingress/grafana-ingress.yml")
+}
+
+data "kubectl_file_documents" "ingress-prometheus" {
+  content = file("../manifests/ingress/prometheus-ingress.yml")
 }

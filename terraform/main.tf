@@ -59,7 +59,7 @@ resource "helm_release" "ingress-nginx" {
   name             = "ingress-nginx"
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
-  version          = "4.0.13"
+  version          = "4.0.17"
   create_namespace = true
   namespace        = "ingress-nginx"
 }
@@ -69,7 +69,7 @@ resource "helm_release" "argocd" {
   name             = "argo-cd"
   repository       = "https://argoproj.github.io/argo-helm"
   chart            = "argo-cd"
-  version          = "3.29.5"
+  version          = "3.33.8"
   create_namespace = true
   namespace        = "argocd"
 }
@@ -79,7 +79,7 @@ resource "helm_release" "prometheus" {
   name             = "prometheus"
   repository       = "https://prometheus-community.github.io/helm-charts"
   chart            = "kube-prometheus-stack"
-  version          = "12.8.0"
+  version          = "33.0.0"
   create_namespace = true
   namespace        = "monitoring"
 }
@@ -88,7 +88,7 @@ resource "helm_release" "prometheus" {
 #  name  = "cert-manager"
 #  repository = "https://charts.jetstack.io"
 #  chart      = "cert-manager"
-#  version    = "1.6.1"
+#  version    = "1.7.1"
 #}
 
 # =====================================================================
@@ -100,11 +100,46 @@ resource "kubectl_manifest" "namespace-bluechat-prod" {
   yaml_body = element(data.kubectl_file_documents.namespace-bluechat-prod.documents, count.index)
 }
 
-resource "kubectl_manifest" "bluechat-app" {
+resource "kubectl_manifest" "bluechat-app-prod" {
   depends_on = [helm_release.argocd]
-  count      = length(data.kubectl_file_documents.bluechat-app.documents)
-  yaml_body  = element(data.kubectl_file_documents.bluechat-app.documents, count.index)
+  count      = length(data.kubectl_file_documents.bluechat-app-prod.documents)
+  yaml_body  = element(data.kubectl_file_documents.bluechat-app-prod.documents, count.index)
 }
+
+resource "kubectl_manifest" "secrets-bluechat-prod" {
+  depends_on = [kubectl_manifest.namespace-bluechat-prod]
+  count      = length(data.kubectl_file_documents.secrets-bluechat-prod.documents)
+  yaml_body  = element(data.kubectl_file_documents.secrets-bluechat-prod.documents, count.index)
+}
+
+#resource "kubectl_manifest" "ingress-bluechat-prod" {
+#  depends_on = [helm_release.ingress-nginx]
+#  count      = length(data.kubectl_file_documents.ingress-bluechat-prod.documents)
+#  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat-prod.documents, count.index)
+#}
+
+resource "kubectl_manifest" "namespace-bluechat-dev" {
+  count     = length(data.kubectl_file_documents.namespace-bluechat-dev.documents)
+  yaml_body = element(data.kubectl_file_documents.namespace-bluechat-dev.documents, count.index)
+}
+
+resource "kubectl_manifest" "bluechat-app-dev" {
+  depends_on = [helm_release.argocd]
+  count      = length(data.kubectl_file_documents.bluechat-app-dev.documents)
+  yaml_body  = element(data.kubectl_file_documents.bluechat-app-dev.documents, count.index)
+}
+
+resource "kubectl_manifest" "secrets-bluechat-dev" {
+  depends_on = [kubectl_manifest.namespace-bluechat-dev]
+  count      = length(data.kubectl_file_documents.secrets-bluechat-dev.documents)
+  yaml_body  = element(data.kubectl_file_documents.secrets-bluechat-dev.documents, count.index)
+}
+
+#resource "kubectl_manifest" "ingress-bluechat-dev" {
+#  depends_on = [helm_release.ingress-nginx]
+#  count      = length(data.kubectl_file_documents.ingress-bluechat-dev.documents)
+#  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat-dev.documents, count.index)
+#}
 
 resource "kubectl_manifest" "ingress-argocd" {
   depends_on = [helm_release.argocd]
@@ -112,21 +147,14 @@ resource "kubectl_manifest" "ingress-argocd" {
   yaml_body  = element(data.kubectl_file_documents.ingress-argocd.documents, count.index)
 }
 
-
-resource "kubectl_manifest" "secrets-bluechat" {
-  depends_on = [kubectl_manifest.namespace-bluechat-prod]
-  count      = length(data.kubectl_file_documents.secrets-bluechat.documents)
-  yaml_body  = element(data.kubectl_file_documents.secrets-bluechat.documents, count.index)
-}
-
-resource "kubectl_manifest" "ingress-bluechat" {
-  depends_on = [helm_release.ingress-nginx]
-  count      = length(data.kubectl_file_documents.ingress-bluechat.documents)
-  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat.documents, count.index)
-}
-
-resource "kubectl_manifest" "prometheus" {
+resource "kubectl_manifest" "ingress-grafana" {
   depends_on = [helm_release.prometheus]
-  count      = length(data.kubectl_file_documents.prometheus.documents)
-  yaml_body  = element(data.kubectl_file_documents.prometheus.documents, count.index)
+  count      = length(data.kubectl_file_documents.ingress-grafana.documents)
+  yaml_body  = element(data.kubectl_file_documents.ingress-grafana.documents, count.index)
+}
+
+resource "kubectl_manifest" "ingress-prometheus" {
+  depends_on = [helm_release.prometheus]
+  count      = length(data.kubectl_file_documents.ingress-prometheus.documents)
+  yaml_body  = element(data.kubectl_file_documents.ingress-prometheus.documents, count.index)
 }

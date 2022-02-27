@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bluechat-ingress-nginx-prod
+  namespace: bluechat-prod
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  #  cert-manager.io/cluster-issuer: "letsencrypt-cluster-issuer"
+spec:
+  #tls:
+  #- hosts: 
+  #  - bluechat.online
+  #  secretName: bluechat-cert-tls
+  rules:
+  - host: bluechat.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bluechat-prod
+            port:
+              number: 80
+
+
+
+    # This section is only required if TLS is to be enabled for the Ingress
+    #tls:
+    #  - hosts:
+    #    - www.example.com
+    #    secretName: example-tls
+
+#If TLS is enabled for the Ingress, a Secret containing the certificate and key must also be provided:
+
+#  apiVersion: v1
+ # kind: Secret
+ # metadata:
+ #   name: example-tls
+ #   namespace: foo
+ # data:
+ #   tls.crt: <base64 encoded cert>
+ #   tls.key: <base64 encoded key>
+ # type: kubernetes.io/tls
