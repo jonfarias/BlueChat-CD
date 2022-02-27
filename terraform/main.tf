@@ -5,11 +5,26 @@ resource "google_service_account" "main" {
   display_name = "GKE Cluster ${var.gcp_cluster_name} Service Account"
 }
 
+resource "google_compute_network" "vpc" {
+  name                    = "${var.gcp_cluster_name}-vpc"
+  auto_create_subnetworks = "false"
+}
+
+# Subnet
+resource "google_compute_subnetwork" "subnet" {
+  name          = "${var.gcp_cluster_name}-subnet"
+  region        = var.gcp_region
+  network       = google_compute_network.vpc.name
+  ip_cidr_range = var.gcp_cluster_ip
+}
+
 resource "google_container_cluster" "main" {
   name                     = "${var.gcp_cluster_name}-cluster"
   location                 = var.gcp_region
   remove_default_node_pool = true
   initial_node_count       = var.gcp_initial_node_count
+  network    = google_compute_network.vpc.name
+  subnetwork = google_compute_subnetwork.subnet.name
 
   release_channel {
     channel = "STABLE"
@@ -112,11 +127,11 @@ resource "kubectl_manifest" "secrets-bluechat-prod" {
   yaml_body  = element(data.kubectl_file_documents.secrets-bluechat-prod.documents, count.index)
 }
 
-#resource "kubectl_manifest" "ingress-bluechat-prod" {
-#  depends_on = [helm_release.ingress-nginx]
-#  count      = length(data.kubectl_file_documents.ingress-bluechat-prod.documents)
-#  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat-prod.documents, count.index)
-#}
+resource "kubectl_manifest" "ingress-bluechat-prod" {
+  depends_on = [helm_release.ingress-nginx]
+  count      = length(data.kubectl_file_documents.ingress-bluechat-prod.documents)
+  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat-prod.documents, count.index)
+}
 
 resource "kubectl_manifest" "namespace-bluechat-dev" {
   count     = length(data.kubectl_file_documents.namespace-bluechat-dev.documents)
@@ -135,11 +150,11 @@ resource "kubectl_manifest" "secrets-bluechat-dev" {
   yaml_body  = element(data.kubectl_file_documents.secrets-bluechat-dev.documents, count.index)
 }
 
-#resource "kubectl_manifest" "ingress-bluechat-dev" {
-#  depends_on = [helm_release.ingress-nginx]
-#  count      = length(data.kubectl_file_documents.ingress-bluechat-dev.documents)
-#  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat-dev.documents, count.index)
-#}
+resource "kubectl_manifest" "ingress-bluechat-dev" {
+  depends_on = [helm_release.ingress-nginx]
+  count      = length(data.kubectl_file_documents.ingress-bluechat-dev.documents)
+  yaml_body  = element(data.kubectl_file_documents.ingress-bluechat-dev.documents, count.index)
+}
 
 resource "kubectl_manifest" "ingress-argocd" {
   depends_on = [helm_release.argocd]

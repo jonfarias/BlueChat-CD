@@ -23,9 +23,9 @@ data "kubectl_file_documents" "secrets-bluechat-prod" {
   content = file("../manifests/bluechat-prod/bluechat-secret-prod.yml")
 }
 #Ingress PROD
-#data "kubectl_file_documents" "ingress-bluechat-prod" {
-#  content = file("../manifests/bluechat-prod/bluechat-ingress-prod.yml")
-#}
+data "kubectl_file_documents" "ingress-bluechat-prod" {
+  content = file("../manifests/bluechat-prod/bluechat-ingress-prod.yml")
+}
 
 
 #ArgoCD-DEV
@@ -41,9 +41,9 @@ data "kubectl_file_documents" "secrets-bluechat-dev" {
   content = file("../manifests/bluechat-dev/bluechat-secret-dev.yml")
 }
 #Ingress DEV
-#data "kubectl_file_documents" "ingress-bluechat-dev" {
-#  content = file("../manifests/bluechat-dev/bluechat-ingress-dev.yml")
-#}
+data "kubectl_file_documents" "ingress-bluechat-dev" {
+  content = file("../manifests/bluechat-dev/bluechat-ingress-dev.yml")
+}
 
 data "kubectl_file_documents" "ingress-argocd" {
   content = file("../manifests/ingress-nginx/argocd-ingress.yml")

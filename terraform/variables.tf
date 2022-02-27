@@ -33,3 +33,8 @@ variable "gcp_node_count" {
   type    = number
   default = 2
 }
+
+variable "gcp_cluster_ip" {
+  type    = string
+  default = "10.1.0.0/24"
+}
