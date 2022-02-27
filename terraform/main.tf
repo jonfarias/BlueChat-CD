@@ -99,6 +99,16 @@ resource "helm_release" "prometheus" {
   namespace        = "monitoring"
 }
 
+resource "helm_release" "linkerd" {
+  depends_on       = [helm_release.prometheus]
+  name             = "linkerd"
+  repository       = "https://helm.linkerd.io/stable"
+  chart            = "linkerd2"
+  version          = "2.11.1"
+  create_namespace = true
+  namespace        = "monitoring"
+}
+
 #resource "helm_release" "cert-manager" {
 #  name  = "cert-manager"
 #  repository = "https://charts.jetstack.io"
