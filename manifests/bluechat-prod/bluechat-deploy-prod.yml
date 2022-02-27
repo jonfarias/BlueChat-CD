@@ -109,7 +109,7 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-prod.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.470
+        image: jonfarias/bluechat-web:0.1.478
         resources:
           limits:
             memory: "256Mi"
@@ -146,12 +146,7 @@ spec:
           valueFrom:
               secretKeyRef:
                 name: bluechat-secret-prod
-                key: secret-key
-        - name: SESSION_TYPE
-          valueFrom:
-              secretKeyRef:
-                name: bluechat-secret-prod
-                key: session-type    
+                key: secret-key  
         - name: FLASK_ENV
           valueFrom:
               secretKeyRef:
