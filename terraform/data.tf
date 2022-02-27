@@ -46,13 +46,13 @@ data "kubectl_file_documents" "secrets-bluechat-dev" {
 #}
 
 data "kubectl_file_documents" "ingress-argocd" {
-  content = file("../manifests/ingress/argocd-ingress.yml")
+  content = file("../manifests/ingress-nginx/argocd-ingress.yml")
 }
 
 data "kubectl_file_documents" "ingress-grafana" {
-  content = file("../manifests/ingress/grafana-ingress.yml")
+  content = file("../manifests/ingress-nginx/grafana-ingress.yml")
 }
 
 data "kubectl_file_documents" "ingress-prometheus" {
-  content = file("../manifests/ingress/prometheus-ingress.yml")
+  content = file("../manifests/ingress-nginx/prometheus-ingress.yml")
 }
