@@ -105,11 +105,11 @@ spec:
     spec:
       initContainers:
         - name: check-mysql
-          image: busybox:1.31.1
+          image: busybox:latest
           command: ['sh', '-c', 'until nslookup bluechat-db-prod.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.462
+        image: jonfarias/bluechat-web:0.1.470
         resources:
           limits:
             memory: "256Mi"
