@@ -43,22 +43,22 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
               secretKeyRef:
-                name: bluechat-secret
+                name: bluechat-secret-dev
                 key: mysql-root-password
         - name: MYSQL_DATABASE
           valueFrom:
               secretKeyRef:
-                name: bluechat-secret
+                name: bluechat-secret-dev
                 key: mysql-database
         - name: MYSQL_USER
           valueFrom:
               secretKeyRef:
-                name: bluechat-secret
+                name: bluechat-secret-dev
                 key: mysql-user
         - name: MYSQL_PASSWORD
           valueFrom:
               secretKeyRef:
-                name: bluechat-secret
+                name: bluechat-secret-dev
                 key: mysql-password
   selector:
     matchLabels:
@@ -111,7 +111,7 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-dev.bluechat-dev.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.468
+        image: jonfarias/bluechat-web:0.1.476
         resources:
           limits:
             memory: "256Mi"
@@ -148,12 +148,7 @@ spec:
           valueFrom:
               secretKeyRef:
                 name: bluechat-secret-dev
-                key: secret-key
-        - name: SESSION_TYPE
-          valueFrom:
-              secretKeyRef:
-                name: bluechat-secret-dev
-                key: session-type    
+                key: secret-key  
         - name: FLASK_ENV
           valueFrom:
               secretKeyRef:
