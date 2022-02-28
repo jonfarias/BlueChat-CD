@@ -111,7 +111,7 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-dev.bluechat-dev.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.476
+        image: jonfarias/bluechat-web:0.1.487
         resources:
           limits:
             memory: "256Mi"
