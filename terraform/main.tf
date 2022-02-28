@@ -23,8 +23,8 @@ resource "google_container_cluster" "main" {
   location                 = var.gcp_region
   remove_default_node_pool = true
   initial_node_count       = var.gcp_initial_node_count
-  network    = google_compute_network.vpc.name
-  subnetwork = google_compute_subnetwork.subnet.name
+  network                  = google_compute_network.vpc.name
+  subnetwork               = google_compute_subnetwork.subnet.name
 
   release_channel {
     channel = "STABLE"
@@ -76,8 +76,8 @@ resource "tls_private_key" "trustanchor_key" {
 }
 
 resource "tls_self_signed_cert" "trustanchor_cert" {
-  key_algorithm         = tls_private_key.trustanchor_key.algorithm
-  private_key_pem       = tls_private_key.trustanchor_key.private_key_pem
+  key_algorithm         = "${tls_private_key.trustanchor_key.algorithm}"
+  private_key_pem       = "${tls_private_key.trustanchor_key.private_key_pem}"
   validity_period_hours = 87600
   is_ca_certificate     = true
 
@@ -103,8 +103,8 @@ resource "tls_private_key" "issuer_key" {
 }
 
 resource "tls_cert_request" "issuer_req" {
-  key_algorithm   = tls_private_key.issuer_key.algorithm
-  private_key_pem = tls_private_key.issuer_key.private_key_pem
+  key_algorithm   = "${tls_private_key.issuer_key.algorithm}"
+  private_key_pem = "${tls_private_key.issuer_key.private_key_pem}"
 
   subject {
     common_name = "identity.linkerd.cluster.local"
@@ -112,10 +112,10 @@ resource "tls_cert_request" "issuer_req" {
 }
 
 resource "tls_locally_signed_cert" "issuer_cert" {
-  cert_request_pem      = tls_cert_request.issuer_req.cert_request_pem
-  ca_key_algorithm      = tls_private_key.trustanchor_key.algorithm
-  ca_private_key_pem    = tls_private_key.trustanchor_key.private_key_pem
-  ca_cert_pem           = tls_self_signed_cert.trustanchor_cert.cert_pem
+  cert_request_pem      = "${tls_cert_request.issuer_req.cert_request_pem}"
+  ca_key_algorithm      = "${tls_private_key.trustanchor_key.algorithm}"
+  ca_private_key_pem    = "${tls_private_key.trustanchor_key.private_key_pem}"
+  ca_cert_pem           = "${tls_self_signed_cert.trustanchor_cert.cert_pem}"
   validity_period_hours = 8760
   is_ca_certificate     = true
 
@@ -132,6 +132,7 @@ resource "tls_locally_signed_cert" "issuer_cert" {
 # ===================================== HELM ==================================
 
 resource "helm_release" "ingress-nginx" {
+  depends_on       = [google_container_node_pool.main]
   name             = "ingress-nginx"
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
@@ -160,6 +161,34 @@ resource "helm_release" "prometheus" {
   namespace        = "monitoring"
 }
 
+resource "helm_release" "linkerd" {
+  depends_on       = [helm_release.prometheus]
+  name             = "linkerd"
+  repository       = "https://helm.linkerd.io/stable"
+  chart            = "linkerd2"
+  version          = "2.11.1"
+
+  set {
+    name  = "identityTrustAnchorsPEM"
+    value = tls_self_signed_cert.trustanchor_cert.cert_pem
+  }
+
+  set {
+    name  = "identity.issuer.crtExpiry"
+    value = tls_locally_signed_cert.issuer_cert.validity_end_time
+  }
+
+  set {
+    name  = "identity.issuer.tls.crtPEM"
+    value = tls_locally_signed_cert.issuer_cert.cert_pem
+  }
+
+  set {
+    name  = "identity.issuer.tls.keyPEM"
+    value = tls_private_key.issuer_key.private_key_pem
+  }
+}
+
 
 #resource "helm_release" "cert-manager" {
 #  name  = "cert-manager"
@@ -173,8 +202,9 @@ resource "helm_release" "prometheus" {
 # ============================== kubectl ==============================
 
 resource "kubectl_manifest" "namespace-bluechat-prod" {
-  count     = length(data.kubectl_file_documents.namespace-bluechat-prod.documents)
-  yaml_body = element(data.kubectl_file_documents.namespace-bluechat-prod.documents, count.index)
+  depends_on = [google_container_node_pool.main]
+  count      = length(data.kubectl_file_documents.namespace-bluechat-prod.documents)
+  yaml_body  = element(data.kubectl_file_documents.namespace-bluechat-prod.documents, count.index)
 }
 
 resource "kubectl_manifest" "bluechat-app-prod" {
@@ -196,8 +226,9 @@ resource "kubectl_manifest" "ingress-bluechat-prod" {
 }
 
 resource "kubectl_manifest" "namespace-bluechat-dev" {
-  count     = length(data.kubectl_file_documents.namespace-bluechat-dev.documents)
-  yaml_body = element(data.kubectl_file_documents.namespace-bluechat-dev.documents, count.index)
+  depends_on = [google_container_node_pool.main]
+  count      = length(data.kubectl_file_documents.namespace-bluechat-dev.documents)
+  yaml_body  = element(data.kubectl_file_documents.namespace-bluechat-dev.documents, count.index)
 }
 
 resource "kubectl_manifest" "bluechat-app-dev" {
