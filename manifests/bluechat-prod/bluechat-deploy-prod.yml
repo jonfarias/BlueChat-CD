@@ -34,9 +34,12 @@ spec:
       - name: bluechat-db
         image: jonfarias/bluechat-db:1
         resources:
+          request:
+            memory: "128Mi"
+            cpu: "100m"
           limits:
             memory: "256Mi"
-            cpu: "500m"
+            cpu: "250m"
         #volumeMounts:
         #  - mountPath: "/var/lib/mysql"
         #    name: db-disk
@@ -109,11 +112,14 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-prod.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.489
+        image: jonfarias/bluechat-web:0.1.497
         resources:
+          request:
+            memory: "128Mi"
+            cpu: "100m"
           limits:
             memory: "256Mi"
-            cpu: "500m"
+            cpu: "300m"
         ports:
         - containerPort: 5000
         env:
