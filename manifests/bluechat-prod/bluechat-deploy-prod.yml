@@ -34,9 +34,6 @@ spec:
       - name: bluechat-db
         image: jonfarias/bluechat-db:1
         resources:
-          request:
-            memory: "128Mi"
-            cpu: "100m"
           limits:
             memory: "256Mi"
             cpu: "250m"
@@ -112,11 +109,8 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-prod.bluechat-prod.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.497
+        image: jonfarias/bluechat-web:0.1.517
         resources:
-          request:
-            memory: "128Mi"
-            cpu: "100m"
           limits:
             memory: "256Mi"
             cpu: "300m"
