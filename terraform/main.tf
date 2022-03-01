@@ -139,6 +139,11 @@ resource "helm_release" "ingress-nginx" {
   version          = "4.0.17"
   create_namespace = true
   namespace        = "ingress-nginx"
+
+  set{
+    name = "controller.metrics.enabled"
+    value = true
+  }
 }
 
 resource "helm_release" "argocd" {
@@ -156,7 +161,7 @@ resource "helm_release" "prometheus" {
   name             = "prometheus"
   repository       = "https://prometheus-community.github.io/helm-charts"
   chart            = "kube-prometheus-stack"
-  version          = "33.0.0"
+  version          = "33.1.0"
   create_namespace = true
   namespace        = "monitoring"
 }
