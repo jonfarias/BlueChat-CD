@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: bluechat-db-dev
   namespace: bluechat-dev
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   type: ClusterIP
   selector:
@@ -22,6 +24,8 @@ kind: Deployment
 metadata:
   name: db-deploy-dev
   namespace: bluechat-dev
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   replicas: 1
   template:
@@ -72,6 +76,8 @@ kind: Service
 metadata:
   name: bluechat-dev
   namespace: bluechat-dev
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   type: ClusterIP
   selector:
@@ -89,6 +95,8 @@ kind: Deployment
 metadata:
   name: bluechat-deploy-dev
   namespace: bluechat-dev
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   replicas: 1
   template:
@@ -103,7 +111,7 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-dev.bluechat-dev.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.515
+        image: jonfarias/bluechat-web:0.1.523
         resources:
           limits:
             memory: "256Mi"
