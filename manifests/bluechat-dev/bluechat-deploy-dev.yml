@@ -66,14 +66,6 @@ spec:
 
 ---
 
-#Namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: bluechat-dev
-
----
-
 #Service Bluechat
 apiVersion: v1
 kind: Service
@@ -111,7 +103,7 @@ spec:
           command: ['sh', '-c', 'until nslookup bluechat-db-dev.bluechat-dev.svc.cluster.local; do echo waiting for mysql; sleep 2; done;'] 
       containers:
       - name: bluechat-container
-        image: jonfarias/bluechat-web:0.1.506
+        image: jonfarias/bluechat-web:0.1.515
         resources:
           limits:
             memory: "256Mi"
