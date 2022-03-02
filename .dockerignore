@@ -2,3 +2,5 @@ Dockerfile
 README.md
 .gitignore
 docker_build_push.sh
+manifests/linkerd/
+manifests/certificates/

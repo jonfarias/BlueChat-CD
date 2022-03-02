@@ -38,7 +38,6 @@ resource "google_container_node_pool" "main" {
   node_count = var.gcp_node_count
 
   node_config {
-    preemptible     = true
     machine_type    = var.gcp_node_machine
     image_type      = "COS_CONTAINERD"
     service_account = google_service_account.main.email
