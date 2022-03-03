@@ -17,9 +17,12 @@ jobs:
           command: |
             docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform validate
       - run:
-          name: terraform init & plan
+          name: terraform init
           command: |
             docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform init 
+      - run:
+          name: terraform plan
+          command: |
             docker run $DOCKER_USER/$DOCKER_CONTAINER:latest terraform plan 
 
   aprove-apply:
