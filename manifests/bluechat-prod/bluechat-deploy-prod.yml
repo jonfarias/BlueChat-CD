@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: bluechat-db-prod
   namespace: bluechat-prod
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   type: ClusterIP
   selector:
@@ -22,6 +24,8 @@ kind: Deployment
 metadata:
   name: bluechat-db-deploy-prod
   namespace: bluechat-prod
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   replicas: 1
   template:
@@ -29,6 +33,8 @@ spec:
         name: bluechat-db-prod
         labels:
           app: bluechat-db-prod
+        annotations:
+          linkerd.io/inject: enabled
     spec:
       containers:
       - name: bluechat-db
@@ -79,6 +85,8 @@ kind: Service
 metadata:
   name: bluechat-prod
   namespace: bluechat-prod
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   type: ClusterIP
   selector:
@@ -95,6 +103,8 @@ kind: Deployment
 metadata:
   name: bluechat-deploy-prod
   namespace: bluechat-prod
+  annotations:
+    linkerd.io/inject: enabled
 spec:
   replicas: 1
   template:
@@ -102,6 +112,8 @@ spec:
         name: bluechat-prod
         labels:
           app: bluechat-prod
+        annotations:
+          linkerd.io/inject: enabled
     spec:
       initContainers:
         - name: check-mysql
